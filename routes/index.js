@@ -1,31 +1,38 @@
 var express = require('express');
 var router = express.Router();
-var usr=require('../dao/dbConnect.js');
+// var usr=require('../dao/dbConnect.js');
+var User = require('../entity/User');
+var {userService} = require('../service/userSrvice');
+var ResResult = require('../entity//ResResult')
 var crypto = require('crypto');
 
+//登录
+router.post('/login',function(req,res) {
+    var {username, password} = req.body;
+    var user = new User({name:username,pw:password});
+    userService.query(user,function(user) {
+        var result = new ResResult({code:1,data:user});
+        /* console.log('Cookies: ', req.cookies)
+        console.log('Signed Cookies: ', req.signedCookies)        
+        res.cookie("user",user.name)  cookie*/
+        console.log('req.session.userName',req.session.userName)
+        req.session.userName = username;
+        res.json(result);
+    })
+})
 
+//登出
+router.post('/logout',function(req,res) {
+    res.json(new ResResult({code:1,data: true}));
+})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+router.post('/regist',function(req,res) {
+    var {username, password} = req.body;
+    var user = new User({naem:username,pw:password});
+    userService.add(user,function(user) {
+        res.json(new ResResult({code:1,data:user}));
+    })
+})
 
 
 module.exports = router;
