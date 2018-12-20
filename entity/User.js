@@ -8,3 +8,4 @@ class User {
         this.email = email;    
     }
 }
+module.exports = User;
