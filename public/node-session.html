@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>node 登陆系统</title>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<style type="text/css">
+			.hidden {
+				display: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="loginWrap">
+			<input id="username" type="text" placeholder="用户名" />
+			<input id="password" type="password" placeholder="密码" />
+			<button id="login">登录</button>
+		</div>
+		<div id="logoutWrap" class="hidden">
+			<span id="user"></span>
+			<button id="logout">退出</button>
+		</div>
+
+		<ul id="tasks">
+
+		</ul>
+		<script type="text/javascript">
+			var baseUrl = 'http://localhost:3000';
+			$.ajaxSetup({
+				xhrFields: {
+					withCredentials: true
+				}
+			})
+			$('#login').on('click', function() {
+				login();
+			})
+			$('#logout').on('click', function() {
+				logout();
+			})
+
+			function login() {
+				$.post(`${baseUrl}/login`, {
+					username: $('#username').val(),
+					password: $('#password').val()
+				}).done(res => {
+					if(res.code == 0) {
+						$('#user').text($('#username').val())
+						$('#loginWrap').addClass('hidden')
+						$('#logoutWrap').removeClass('hidden')
+					}
+				})
+			}
+
+			function logout() {
+				$.post(`${baseUrl}/logout`).done(res => {
+					if(res.code == 0) {
+						$('#user').text($('#username').val())
+						$('#loginWrap').removeClass('hidden')
+						$('#logoutWrap').addClass('hidden')
+					}
+				})
+			}
+
+			function getTasks() {
+				$.get(`${baseUrl}/tasks`).done(res => {
+					if(res.code == 0) {
+						$('#tasks').html('');
+						res.data.forEach(item => {
+							$('#tasks').append(`<li>${item.name}</li>`)
+						})
+					}
+				})
+			}
+		</script>
+	</body>
+
+</html>
