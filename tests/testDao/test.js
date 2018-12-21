@@ -23,4 +23,4 @@ taskDao.queryTaskById({id:1}).then(task=>{
 }).catch(err=>{
     console.log(err);
 })
-// console.log(new Task({id:1}))
+
