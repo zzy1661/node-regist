@@ -6,7 +6,8 @@ class User {
         this.name = name;
         this.pw = pw || md5(rawPw),
         this.role = role;
-        this.email = email;    
+        this.email = email; 
+        this.rawPw = rawPw;   
     }
 }
 module.exports = User;
