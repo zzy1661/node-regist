@@ -6,13 +6,14 @@ var { userService } = require('../service/userSrvice');
 var ResResult = require('../entity//ResResult')
 var crypto = require('crypto');
 var jwt = require("jsonwebtoken");
+var expressJwt = require("express-jwt");
 
 //登录
 router.post('/login', function (req, res) {
     var { username, password } = req.body;
-    var user = new User({ name: username, pw: password });
-    userService.query(user, function (user) {
-
+    console.log(username,password,req.body)
+    var user = new User({ name: username, rawPw: password });
+    userService.queryUserByName(username).then(users =>{
         /* console.log('Cookies: ', req.cookies)
         console.log('Signed Cookies: ', req.signedCookies)        
         res.cookie("user",user.name)  cookie*/
@@ -20,15 +21,31 @@ router.post('/login', function (req, res) {
         console.log('req.session.userName',req.session.userName)
         req.session.userName = username; 
         res.json(result); */
-        var authToken = jwt.sign({username}, "secret");
-        var result = new ResResult({code:0,data:{token: authToken}})
+        if(users.length==0) {
+            //没有该用户:创建用户
+            userService.add(user).then(result=>{
+                
+            })
+        }
+        
+        var userInDb = users.filter(u=>{
+            u.pw == user.pw;
+        })[0]
+        //密码不对
+        if(!userInDb) {
+
+        }
+        //正确用户
+        var authToken = jwt.sign({ username }, "secret", { expiresIn: 60 * 60 });
+        var result = new ResResult({ code: 0, data: { token: authToken } })
         res.status(200).json(result);
     })
 })
 
 //登出
 router.post('/logout', function (req, res) {
-    console.log(req.user)
+    console.log('out',req.user)
+    
     res.json(new ResResult({ code: 0, data: true }));
 })
 

@@ -1,7 +1,6 @@
 var {md5} = require('../sec');
 
 class User {
-
     constructor({id,name,pw,role,email,rawPw}) {
         this.id = id;
         this.name = name;

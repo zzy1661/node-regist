@@ -1,11 +1,12 @@
-
+var UserDao = require('../dao/UserDao');
+var userDao = new UserDao();
 
 
 exports.userService = {
-    query(user,cb) {
-        cb(user);
+    queryUserByName(name) {
+        return userDao.queryUserByName(name);
     },
-    add(user,cb) {
-       cb(user);
+    add(user) {
+       return userDao.addUser(user);
     }
 }
