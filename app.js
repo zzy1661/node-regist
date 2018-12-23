@@ -12,6 +12,7 @@ var expressJwt = require("express-jwt");
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var tasks = require('./routes/tasks.js');
 var ResResult = require('./entity/ResResult')
 
 
@@ -59,6 +60,7 @@ app.use(express.static(path.join(__dirname, 'public'))); */
 app.use(expressJwt({ secret: "secret" }).unless({ path: ["/login"] }));
 app.use('/', routes);
 app.use('/users', users);
+app.use('/tasks',tasks);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -71,7 +73,8 @@ app.use(function (req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         if (err.name === "UnauthorizedError") {
-            res.status(401).send("invalid token");
+            var result = new ResResult({ code: 1000, data: null, msg: 'Unauthorized' })
+            res.status(401).json(result);
         } else {
             res.status(err.status || 500);
             console.log(err)
@@ -82,7 +85,8 @@ if (app.get('env') === 'development') {
 } else {
     app.use(function (err, req, res, next) {
         if (err.name === "UnauthorizedError") {
-            res.status(401).send("invalid token");
+            var result = new ResResult({ code: 1000, data: null, msg: 'Unauthorized' })
+            res.status(401).json(result);
         } else {
             res.status(err.status || 500);
             console.log(err)
