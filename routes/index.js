@@ -24,16 +24,22 @@ router.post('/login', function (req, res) {
         if(users.length==0) {
             //没有该用户:创建用户
             userService.add(user).then(result=>{
-                
+                var authToken = jwt.sign({ username }, "secret", { expiresIn: 60 * 60 });
+                var result = new ResResult({ code: 0, data: { token: authToken } })
+                res.status(200).json(result);
+            }).catch(e=>{
+                res.status(500).json(new ResResult({ code: 999, data: null,msg:e.message }));
             })
+            return;
         }
         
-        var userInDb = users.filter(u=>{
-            u.pw == user.pw;
-        })[0]
+       
         //密码不对
-        if(!userInDb) {
-
+        if(!users.filter(u=>{
+            u.pw == user.pw;
+        })[0]) {
+            res.status(500).json(new ResResult({ code: 999, data: null,msg:'密码错误' }));
+            return ;
         }
         //正确用户
         var authToken = jwt.sign({ username }, "secret", { expiresIn: 60 * 60 });

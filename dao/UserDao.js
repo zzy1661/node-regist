@@ -8,7 +8,7 @@ class UserDao {
     addUser(user) {
         return new Promise((resolve, reject) => {
             var inputs = ['name', 'pw', 'role', 'email'];
-            var sql = `insert into user (${inputs.join()}) values (${inputs.map(i => '?').join()})`;
+            var sql = `insert into user (id,${inputs.join()}) values ( replace(uuid(),'-',''), ${inputs.map(i => '?').join()})`;
             var params = inputs.map(i => user[i]);
             this.client.query(sql, params, (err, results, fields) => {
                 if (err) reject(err);
