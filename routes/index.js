@@ -6,6 +6,7 @@ var { userService } = require('../service/userSrvice');
 var ResResult = require('../entity//ResResult')
 var crypto = require('crypto');
 var jwt = require("jsonwebtoken");
+var uuid = require('uuid/v4')();
 var expressJwt = require("express-jwt");
 
 //登录
@@ -23,8 +24,9 @@ router.post('/login', function (req, res) {
         res.json(result); */
         if(users.length==0) {
             //没有该用户:创建用户
+            user.id = uuid().replace(/-/g,'');
             userService.add(user).then(result=>{
-                var authToken = jwt.sign({ username }, "secret", { expiresIn: 60 * 60 });
+                var authToken = jwt.sign({ username,id }, "secret", { expiresIn: 60 * 60 });
                 var result = new ResResult({ code: 0, data: { token: authToken } })
                 res.status(200).json(result);
             }).catch(e=>{
@@ -57,7 +59,7 @@ router.post('/logout', function (req, res) {
 
 router.post('/regist', function (req, res) {
     var { username, password } = req.body;
-    var user = new User({ naem: username, pw: password });
+    var user = new User({id:uuid().replace(/-/g,''), name: username, pw: password });
     userService.add(user, function (user) {
         res.json(new ResResult({ code: 0, data: user }));
     })
