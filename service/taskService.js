@@ -1,21 +1,20 @@
 var TaskDao = require('../dao/TaskDao');
-var TaskDao = new TaskDao();
-
+var taskDao = new TaskDao();
 
 exports.taskService = {
-    addTask(task, uid) {
-
+    addTask(task) {
+        return taskDao.addTask(task);
     },
-    deleteTask(task, uid) {
-
+    deleteTask(task) {
+        return taskDao.deleteTask(task);
     },
-    updateTask(task, uid) {
-
+    updateTask(task) {
+        return taskDao.deleteTask(task);
     },
-    queryTasks(task, uid) {
-
+    queryTasks(task) {
+        return taskDao.queryTasks(task);
     },
-    queryTaskById(task, uid) {
-
+    queryTaskById(task) {
+        return taskDao.queryTaskById(task);
     }
 }

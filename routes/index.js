@@ -1,13 +1,10 @@
 var express = require('express');
 var router = express.Router();
-// var usr=require('../dao/dbConnect.js');
 var User = require('../entity/User');
 var { userService } = require('../service/userSrvice');
 var ResResult = require('../entity//ResResult')
-var crypto = require('crypto');
 var jwt = require("jsonwebtoken");
 var uuid = require('uuid/v4')();
-var expressJwt = require("express-jwt");
 
 //登录
 router.post('/login', function (req, res) {
@@ -37,14 +34,16 @@ router.post('/login', function (req, res) {
         
        
         //密码不对
-        if(!users.filter(u=>{
-            u.pw == user.pw;
-        })[0]) {
+        var userInDb = users.filter(u=>{
+            return u.pw == user.pw;
+        })[0];
+        if(!userInDb) {
+            console.log(users,user)
             res.status(500).json(new ResResult({ code: 999, data: null,msg:'密码错误' }));
             return ;
         }
         //正确用户
-        var authToken = jwt.sign({ username }, "secret", { expiresIn: 60 * 60 });
+        var authToken = jwt.sign({ username,id:userInDb.id }, "secret", { expiresIn: 60 * 60 });
         var result = new ResResult({ code: 0, data: { token: authToken } })
         res.status(200).json(result);
     })
