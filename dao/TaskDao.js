@@ -79,7 +79,6 @@ class TaskDao {
                 results.length > 0 ? resolve(new Task(results[0])) : resolve(null);
             })
         });
-
     }
 }
 module.exports = TaskDao;
