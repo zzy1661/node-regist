@@ -8,14 +8,13 @@ var uuid = require('uuid/v4')();
 
 //查所有 /tasks?status=0
 router.get('/',(req,res) => {
-    var status = req.params.status;
-    console.log('req.user',req.user);
     var task = new Task({uid:req.user.id});
     //根据状态查
     var status = req.query.status;
-    if(status) {
-        task.status = status;
-    }
+   
+    task.status = status;
+    console.log('req.query',req.query,status)
+    console.log(task)
     taskService.queryTasks(task).then(results=>{
         var r = new ResResult({code:0,data:results})
         res.json(r)
