@@ -26,9 +26,18 @@ router.get('/',(req,res) => {
 router.get('/:id',(req,res) => {
     var id = req.params.id;
     var task = new Task({id:id,uid:req.user.id});
-    taskService.queryTaskById(task).then(results=>{
-        var r = new ResResult({code:0,data:results[0]})
+    taskService.queryTaskById(task).then(result=>{
+        var r = new ResResult({code:0,data:result})
         res.json(r)
+    })
+})
+router.get('/tree/:id',(req,res) => {
+    var id = req.params.id;
+    var task = new Task({id,uid:req.user.id});
+    task.status = null;
+    taskService.queryTaskTreeById(task).then(result=>{
+        var r = new ResResult({code:0,data:result});
+        res.json(r);
     })
 })
 

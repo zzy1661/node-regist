@@ -1,7 +1,7 @@
 class Task {
 
     constructor({id,name,des,pid=0,creatime,endtime,status=0,uid=-1}) {
-        this.id = id;
+        this.id = Number(id);
         this.name = name;
         this.des = des;
         this.pid = pid;
