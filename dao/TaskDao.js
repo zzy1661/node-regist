@@ -6,7 +6,7 @@ class TaskDao {
     }
     addTask(task) {
         return new Promise((resolve, reject) => {
-            var inputs = ['name', 'des', 'pid', 'creatime', 'endtime', 'status', 'uid'];
+            var inputs = ['name', 'des', 'pid', 'startime', 'endtime', 'status', 'uid'];
             var sql = `insert into tasks (${inputs.join()}) values (${inputs.map(i => '?').join()})`;
             var params = inputs.map(i => task[i]);            
             this.client.query(sql, params, (err, results, fields) => {
@@ -50,15 +50,15 @@ class TaskDao {
             var conditions = [];
             var values = [];
             if (task) {
-                var { name, creatime, endtime, status,uid } = task;
+                var { name, startime, endtime, status,uid } = task;
                 if (name !== null && name !== undefined) { conditions.push('name = ?'); values.push(name) }
-                if (creatime !== null && creatime !== undefined) { conditions.push('creatime = ?'); values.push(creatime) }
+                if (startime !== null && startime !== undefined) { conditions.push('startime = ?'); values.push(startime) }
                 if (endtime !== null && endtime !== undefined) { conditions.push('endtime = ?'); values.push(endtime) }
                 if (status !== null && status !== undefined) { conditions.push('status = ?'); values.push(status) }
                 conditions.push('uid = ?'); values.push(task.uid)
             }
             var conditionStr = conditions.length > 0 ? `where ${conditions.join(' and ')}` : '';
-            var sql = `select id,name,des,pid,creatime,endtime,status,uid from tasks ${conditionStr} and del = 0`;
+            var sql = `select id,name,des,pid,startime,endtime,status,uid from tasks ${conditionStr} and del = 0`;
             
             this.client.query(sql, values, (err, results, fields) => {
                 if (err) reject(err);
@@ -70,7 +70,7 @@ class TaskDao {
     }  
     queryTaskById(task) {
         return new Promise((resolve, reject) => {
-            var sql = `select id,name,des,pid,creatime,endtime,status,uid from tasks where id = ? and uid = ?`;         
+            var sql = `select id,name,des,pid,startime,endtime,status,uid from tasks where id = ? and uid = ?`;         
             this.client.query(sql, [task.id, task.uid], (err, results, fields) => {
                 if (err) reject(err);
                 var res = new Task(new Task(results[0]));
