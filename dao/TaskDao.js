@@ -62,7 +62,7 @@ class TaskDao {
             
             this.client.query(sql, values, (err, results, fields) => {
                 if (err) reject(err);
-                results.length > 0 ? resolve(results.map(i => new Task(i))) : resolve([]);
+                (results && results.length > 0) ? resolve(results.map(i => new Task(i))) : resolve([]);
 
             })
         })
