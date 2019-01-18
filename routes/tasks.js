@@ -22,6 +22,33 @@ router.get('/',(req,res) => {
     
 })
 
+//创建
+router.post('/',(req,res)=>{
+    var taskData = req.body.task;
+    var task = new Task({
+        uid:req.user.id,
+        name:taskData.name,
+        des:taskData.des,
+        pid:taskData.pid||0,
+        creatime: new Date().getTime(),
+        startime:taskData.startime,
+        endtime:taskData.endtime,
+        status:5
+    })
+    taskService.addTask(task).then(result=>{
+        if(result.affectedRows>0) {
+            taskService.queryTasks(new Task({uid:req.user.id})).then(results=>{
+                var r = new ResResult({code:0,data:results})
+                res.json(r)
+            })
+        } else {
+            var r = new ResResult({code:1,data:null,msg:'failed'})
+            res.json(r)
+        }
+    })
+})
+
+
 //根据id查
 router.get('/:id',(req,res) => {
     var id = req.params.id;
@@ -40,5 +67,7 @@ router.get('/tree/:id',(req,res) => {
         res.json(r);
     })
 })
+
+
 
 module.exports = router;
