@@ -12,7 +12,7 @@ var uuid = require('uuid/v4')();
 router.get('/', (req, res) => {
     var task = new Task({
         uid: req.user.id,
-        del:0
+        del: 0
     });
     //根据状态查
     var status = req.query.status;
@@ -31,12 +31,22 @@ router.get('/', (req, res) => {
 //更新
 router.put('/', (req, res) => {
     var taskData = req.body.task,
+        type = req.body.type,
         task = new Task({
             uid: req.user.id,
             id: taskData.id,
+            des: taskData.des,
             del: taskData.del,
-            status: taskData.status
-        })
+            pid: taskData.pid,
+            status: taskData.status,
+            name: taskData.name,
+        });
+        if(type === 'edit') {
+            task.startime = taskData.startime;
+            task.endtime = taskData.endtime;
+        }
+        
+
     taskService.updateTask(task).then(result => {
         if (result.affectedRows > 0) {
             var r = new ResResult({
@@ -69,9 +79,10 @@ router.post('/', (req, res) => {
     })
     taskService.addTask(task).then(result => {
         if (result.affectedRows > 0) {
+            task.id = result.insertId;
             var r = new ResResult({
                 code: 0,
-                data: result.insertId
+                data: task
             })
             res.json(r)
         } else {
