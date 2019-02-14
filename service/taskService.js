@@ -11,7 +11,7 @@ var taskService = {
         return taskDao.deleteTask(task);
     },
     updateTask(task) {
-        return taskDao.deleteTask(task);
+        return taskDao.updateTask(task);
     },
     queryTasks(task) {
         return taskDao.queryTasks(task);
